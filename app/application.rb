@@ -1,5 +1,5 @@
 class Application
-
+  @@cart = []
   @@items = ["Apples","Carrots","Pears"]
 
   def call(env)
@@ -9,6 +9,23 @@ class Application
     if req.path.match(/items/)
       @@items.each do |item|
         resp.write "#{item}\n"
+      end
+    elsif req.path.match(/cart/) #loop thru cart and write to browser
+      if @@cart.empty?
+        resp.write("Your cart is empty")
+      else
+        @@cart.each do |item|
+        resp.write "#{item}\n"
+        end
+      end
+    elsif req.path.match(/add/)
+      desired_item = req.params["item"]
+
+      if @@items.include?(desired_item)
+        @@cart << desired_item
+        resp.write("added #{desired_item}.")
+      else
+        resp.write "We don't have that item"
       end
     elsif req.path.match(/search/)
       search_term = req.params["q"]
